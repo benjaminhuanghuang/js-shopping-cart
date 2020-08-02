@@ -11,6 +11,7 @@ const productsDOM = document.querySelector(".products-center");
 
 //
 let cart = [];
+let buttonsDOM =[];   // "add to bag" buttons 
 
 class Products {
   async getProducts() {
@@ -37,16 +38,15 @@ class Products {
 }
 
 class UI {
-  setupApp(){
+  setupApp() {
     cart = Storage.getCart();
     // set total value
     this.setCartValue(cart);
     this.populateCart(cart);
 
-    cartBtn.addEventListener('click', this.showCart);
-    closeCartBtn.addEventListener('click', this.hideCart);
+    cartBtn.addEventListener("click", this.showCart);
+    closeCartBtn.addEventListener("click", this.hideCart);
   }
-
 
   displayProducts(products) {
     // console.log(products);
@@ -74,6 +74,7 @@ class UI {
   getBagButtons() {
     // buttons on product "Add to bag"
     const buttons = [...document.querySelectorAll(".bag-btn")];
+    buttonsDOM = buttons;
 
     buttons.forEach((button) => {
       let id = button.dataset.id;
@@ -91,8 +92,8 @@ class UI {
 
         cart = [...cart, cartItem];
 
-        Storage.saveCart( cart);
-        
+        Storage.saveCart(cart);
+
         this.setCartValue(cart);
 
         this.addCartItem(cartItem);
@@ -106,7 +107,7 @@ class UI {
     let tempTotal = 0;
     let itemsTotal = 0;
 
-    cart.map(item =>{
+    cart.map((item) => {
       tempTotal += item.price * item.amount;
       itemsTotal += item.amount;
     });
@@ -116,8 +117,8 @@ class UI {
   }
 
   addCartItem(item) {
-    const div = document.createElement('div');
-    div.classList.add('cart-item');
+    const div = document.createElement("div");
+    div.classList.add("cart-item");
     div.innerHTML = `
       <img src=${item.image} alt="">
       <div>
@@ -132,30 +133,60 @@ class UI {
         <p class="item-amount">${item.amount}</p>
         <i class="fas fa-chevron-down" data-id=${item.id}></i>
       </div>
-    `
+    `;
     cartContent.appendChild(div);
   }
 
   /*
     show cart by chaning the css
   */
-  showCart(){
-    cartOverlay.classList.add('transparentBcg');
-    cartDOM.classList.add('showCart');
+  showCart() {
+    cartOverlay.classList.add("transparentBcg");
+    cartDOM.classList.add("showCart");
   }
 
-  hideCart(){
-    cartOverlay.classList.remove('transparentBcg');
-    cartDOM.classList.remove('showCart');
+  hideCart() {
+    cartOverlay.classList.remove("transparentBcg");
+    cartDOM.classList.remove("showCart");
   }
 
   /*
    create cart items on UI
   */
-  populateCart(cart){
-    cart.forEach(item => this.addCartItem(item));
+  populateCart(cart) {
+    cart.forEach((item) => this.addCartItem(item));
   }
 
+  cartLogic() {
+    // 'this' is the clearCartBtn
+    // clearCartBtn.addEventListener('click', this.clearCart());
+
+    clearCartBtn.addEventListener("click", () => {
+      this.clearCart();
+    });
+  }
+
+  clearCart() {
+    let cartItems = cart.map(item=>item.id);
+    cartItems.forEach(id=> this.removeItem(id));  // chane the products UI
+
+    while(cartContent.children.length > 0){
+      cartContent.removeChild(cartContent.children[0]);
+    }
+  }
+
+  removeItem(id) {
+    cart = cart.filter(item=>item.id !== id);
+    this.setCartValue(cart);
+    Storage.saveCart(cart);
+    let button = this.getSingleButton(id);
+    button.disabled = false;
+    button.innerHTML = `<i class="fas fa-shopping-cart"></i>add to cart`
+  }
+
+  getSingleButton(id) {
+    return buttonsDOM.find(button => button.dataset.id === id);
+  }
 }
 
 class Storage {
@@ -173,9 +204,9 @@ class Storage {
     localStorage.setItem("cart", JSON.stringify(cart));
   }
 
-  static getCart(){
+  static getCart() {
     let cart = localStorage.getItem("cart");
-    return  cart? JSON.parse(cart):[];
+    return cart ? JSON.parse(cart) : [];
   }
 }
 
@@ -193,5 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(() => {
       ui.getBagButtons();
+      ui.cartLogic();
     });
 });

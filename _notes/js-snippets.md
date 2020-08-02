@@ -12,3 +12,9 @@
     let id = button.dataset.id;
   });
 ```
+
+## this
+```
+  // 'this' is the button
+  clearCartBtn.addEventListener('click', this.clearCart());    
+```
