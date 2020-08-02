@@ -18,3 +18,13 @@
   // 'this' is the button
   clearCartBtn.addEventListener('click', this.clearCart());    
 ```
+
+## event p
+```
+  if (event.target.classList.contains("remove-item")) {
+    let removeItem = event.target;
+    let id = removeItem.dataset.id;
+    cartContent.removeChild(removeItem.parentElement.parentElement);
+    this.remveItem(id);
+  }
+```
