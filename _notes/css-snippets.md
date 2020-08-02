@@ -30,6 +30,16 @@
   grid-template-columns: repeat(4, 1fr);
 ```
 
+auto - all space - auto
+```
+.cart-item {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr auto;
+  grid-column-gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+```
 ## button animaiton
 ```
 .img-container:hover .bag-btn {
