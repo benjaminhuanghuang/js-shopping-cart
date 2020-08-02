@@ -42,6 +42,9 @@ class UI {
     // set total value
     this.setCartValue(cart);
     this.populateCart(cart);
+
+    cartBtn.addEventListener('click', this.showCart);
+    closeCartBtn.addEventListener('click', this.hideCart);
   }
 
 
@@ -139,6 +142,11 @@ class UI {
   showCart(){
     cartOverlay.classList.add('transparentBcg');
     cartDOM.classList.add('showCart');
+  }
+
+  hideCart(){
+    cartOverlay.classList.remove('transparentBcg');
+    cartDOM.classList.remove('showCart');
   }
 
   /*
