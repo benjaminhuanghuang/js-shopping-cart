@@ -37,6 +37,14 @@ class Products {
 }
 
 class UI {
+  setupApp(){
+    cart = Storage.getCart();
+    // set total value
+    this.setCartValue(cart);
+    this.populateCart(cart);
+  }
+
+
   displayProducts(products) {
     // console.log(products);
     let result = "";
@@ -85,6 +93,8 @@ class UI {
         this.setCartValue(cart);
 
         this.addCartItem(cartItem);
+
+        this.showCart();
       });
     });
   }
@@ -93,9 +103,9 @@ class UI {
     let tempTotal = 0;
     let itemsTotal = 0;
 
-    cart.map(itme =>{
+    cart.map(item =>{
       tempTotal += item.price * item.amount;
-      itemsTotal += itme.amount;
+      itemsTotal += item.amount;
     });
 
     cartTotal.innerText = parseFloat(tempTotal.toFixed(2));
@@ -122,6 +132,22 @@ class UI {
     `
     cartContent.appendChild(div);
   }
+
+  /*
+    show cart by chaning the css
+  */
+  showCart(){
+    cartOverlay.classList.add('transparentBcg');
+    cartDOM.classList.add('showCart');
+  }
+
+  /*
+   create cart items on UI
+  */
+  populateCart(cart){
+    cart.forEach(item => this.addCartItem(item));
+  }
+
 }
 
 class Storage {
@@ -138,11 +164,18 @@ class Storage {
   static saveCart(cart) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }
+
+  static getCart(){
+    let cart = localStorage.getItem("cart");
+    return  cart? JSON.parse(cart):[];
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const ui = new UI();
   const products = new Products();
+
+  ui.setupApp();
 
   products
     .getProducts()
