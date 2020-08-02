@@ -19,7 +19,7 @@
   clearCartBtn.addEventListener('click', this.clearCart());    
 ```
 
-## event p
+## event bubbling
 ```
   if (event.target.classList.contains("remove-item")) {
     let removeItem = event.target;
